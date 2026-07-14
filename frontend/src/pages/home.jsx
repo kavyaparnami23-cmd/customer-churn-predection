@@ -2,6 +2,7 @@ import { useState } from "react";
 import Navbar from "../components/Navbar";
 import CustomerForm from "../components/Customerform";
 import PredictionCard from "../components/Predictioncard";
+import Footer from "../components/footer";
 import { predictChurn } from "../services/api";
 
 function Home() {
@@ -18,9 +19,11 @@ function Home() {
       const result = await predictChurn(formData);
       setPrediction(result);
     } catch (err) {
+      // api.js already unwraps error.response.data, so err
+      // is either { detail: "..." } or { detail: "Unable to connect..." }
       const message =
-        err.response?.data?.detail ||
-        err.message ||
+        err?.detail ||
+        err?.message ||
         "Something went wrong. Make sure the backend is running.";
       setError(message);
     } finally {
@@ -37,7 +40,8 @@ function Home() {
         <div className="page-header animate-in">
           <h1 className="page-title">Customer Churn Analysis</h1>
           <p className="page-subtitle">
-            Enter customer details below and let our ML model predict whether the customer is likely to churn.
+            Enter customer details below and let our ML model predict whether
+            the customer is likely to churn.
           </p>
         </div>
 
@@ -54,6 +58,8 @@ function Home() {
         </div>
 
       </main>
+
+      <Footer />
     </div>
   );
 }

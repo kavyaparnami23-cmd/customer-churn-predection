@@ -1,3 +1,5 @@
+import "../App.css";
+
 function Navbar() {
   return (
     <nav className="navbar">
@@ -10,7 +12,7 @@ function Navbar() {
 
         <div className="navbar-badge">
           <span className="navbar-badge-dot"></span>
-          ML Powered
+          ML Model Active
         </div>
 
       </div>
