@@ -2,15 +2,27 @@
 FROM node:20-alpine AS frontend-build
 
 WORKDIR /frontend
+
+# Copy package files first for better layer caching
 COPY frontend/package.json frontend/package-lock.json ./
-RUN npm ci
+
+# Use npm install instead of npm ci for better compatibility
+# --legacy-peer-deps handles any peer dependency conflicts
+RUN npm install --legacy-peer-deps
+
 COPY frontend/ ./
+
 RUN npm run build
 
 # ── Stage 2: Python backend + built frontend ───────
 FROM python:3.10-slim
 
 WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
 COPY requirements.txt .
